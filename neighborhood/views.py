@@ -3,14 +3,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignupForm, BusinessForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-
-# Create your views here.
-
+from .models import NeighbourHood, Profile, Business, Post
+from .forms import UpdateProfileForm, NeighbourHoodForm, PostForm
+from django.contrib.auth.models import User
 
 
 @login_required(login_url='login')
 def index(request):
     return render(request, 'index.html')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -73,7 +74,6 @@ def single_hood(request, hood_id):
     return render(request, 'single_hood.html', params)
 
 
-
 def hood_members(request, hood_id):
     hood = NeighbourHood.objects.get(id=hood_id)
     members = Profile.objects.filter(neighbourhood=hood)
@@ -93,6 +93,14 @@ def create_post(request, hood_id):
     else:
         form = PostForm()
     return render(request, 'post.html', {'form': form})
+
+
+def join_hood(request, id):
+    neighbourhood = get_object_or_404(NeighbourHood, id=id)
+    request.user.profile.neighbourhood = neighbourhood
+    request.user.profile.save()
+    return redirect('hood')
+
 
 def leave_hood(request, id):
     hood = get_object_or_404(NeighbourHood, id=id)
