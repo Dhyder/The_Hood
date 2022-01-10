@@ -28,3 +28,10 @@ class SignupForm(UserCreationForm):
             'password1': None,
             'password2': None,
         }
+
+
+class UpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        exclude = ('user', 'neighbourhood')
+    
