@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<!--
+      Header start 
+      ============================== -->
+<nav id="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="block">
+                    <nav class="navbar navbar-default">
+                        <div class="container-fluid">
+                            <!-- Brand and toggle get grouped for better mobile display -->
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#bs-example-navbar-collapse-1">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="/">
+                                    <img src="/static/images/logo.png" alt="Logo">
+                                </a>
+
+                            </div>
+
+                            <!-- Collect the nav links, forms, and other content for toggling -->
+                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><a href="/">Home</a></li>
+                                    <li><a href="{% url 'hood' %}">Hoods</a></li>
+                                    {% if user.profile.neighbourhood %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" class="text-white" href="/" id="dropdown03"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My
+                                            Hood</a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdown03">
+                                            <li><a
+                                                    href="{% url 'single-hood' user.profile.neighbourhood.id %}">{{user.profile.neighbourhood.name}}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    {% else %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" class="text-white" href="/" id="dropdown03"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My
+                                            Hood</a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdown03">
+                                            <li><a href="">No Hood Yet</a></li>
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                    <!-- <li><a href="#footer">Contact</a></li> -->
+                                    {% if user.is_authenticated %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" class="text-white" href="/" id="dropdown03"
+                                            data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">{{user.username|title}}</a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdown03">
+                                            <li><a href="{% url 'profile' user.username %}">Profile</a></li>
+                                            <li><a href="{% url 'edit-profile' user.username %}">Edit Profile</a></li>
+                                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><img style="width: 30;height: 30px;" class="img-circle"
+                                            src="{{ user.profile.profile_picture.url }}" alt="">
+                                    </li>
+                                    {% else %}
+                                    <li><a href="{% url 'login' %}">Log In</a></li>
+                                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div><!-- /.navbar-collapse -->
+                        </div><!-- /.container-fluid -->
+                    </nav>
+                </div>
+            </div><!-- .col-md-12 close -->
+        </div><!-- .row close -->
+    </div><!-- .container close -->
+</nav><!-- header close -->
+
+
+
+<div id="brainiac" style='margin-top:-16px'>
+
+    <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="margin-top: 100px;background-color: rgb(172, 134, 85);">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span style="margin-bottom: 25px;" aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">New Business</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" style="border-radius: 0;">
+                        {% csrf_token%}
+                        {{form|crispy}}
+                        <button type="submit" class="btn btn-sm btn-success"> <i class="fa fa-save"></i> Business </button>
+                        <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal" style="float: right;">
+                            <i class="fa fa-close"></i> Close
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <h1 class="heading"> <span>My Hood</span></h1>
+
+    <div class="loop" >
+
+        <div class="container-fluid">
+            <div class="cont_text_img">
+                <div class="cont_img_back">
+                    <img class='img_1' src="{{ hood.hood_logo.url }}" alt="" width="720" height="480" />
+                    <img class='img_2' src="https://unsplash.it/1000/1000" alt="" width="720" height="480" /></div>
+                <div class="cont_text">
+                    <h1>{{ hood.name | title }} ({{hood.location}})</h1>
+                    <p>{{hood.description}}</p>
+                    <p class="card-text"><span class="text-info">Police Tell</span>
+                        &nbsp;<strong>{{hood.police_number}}</strong> |
+                        <span class="text-warning">Hospital Tell</span> <strong>{{hood.health_tell}}</strong></p>
+                    <form class="form" method="get" action="{% url 'search' %}">
+                        {% csrf_token %}
+                        <div class="md-form my-0">
+                            <input style="background-color: rgba(222, 184, 135, 0.619);" class="form-control mr-sm-2 "
+                                type="text" placeholder="Search Business..." name="title" aria-label="Search">
+                        </div>
+                    </form>
+                    <!-- <button class="btn_read_m">READ MORE</button> -->
+                    <a href="" class="btn btn-sm mb-4 mr-4 btn_read_m" data-toggle="modal"
+                        data-target="#ModalCenter">Add
+                        Business</a>
+                    <a style="margin-left: 10px;" class="btn btn-sm mb-4 btn_read_x"
+                        href="{% url 'post' hood.id %}">Create Post</a>
+                    {% if hood.admin == user.profile %}
+                    <a style="margin-left: 10px;" class="btn btn-sm mb-4 btn_read_l"
+                        href="{% url 'members' hood.id %}">Members</a>
+                    {% endif %}
+                    <div class="cont_icon_like">
+                        <p>Admin: <br> <i class="fa fa-user-circle-o"> {{ hood.admin.user.username | title }}</i></p>
+                    </div>
+                </div>
+                <div class="cont_img_frond">
+                    <img class='img_1' src="{{ hood.hood_logo.url }}" alt="" width="720" height="480" />
+                    <img class='img_2' src="https://unsplash.it/1000/1000" alt="" width="720" height="480" />
+                    <div class="cont_icons_img_from">
+                        <ul style="margin-top:45px;">
+                            <li><i style="font-size: 10px;" class="fa fa-male"><i style="font-size: 10px;"
+                                        class="fa fa-female"> {{ hood.members.count }}
+                                        Member{{hood.members.count|pluralize}}</i></i>
+                            </li>
+                            <li>
+                                <i style="font-size: 11px;" class="fa fa-building-o"> {{ hood.business.count }}
+                                    Businesse{{ hood.business.count|pluralize }}</i>
+                            </li>
+                            <li><i style="font-size: 11px;" class="fa fa-ravelry"> {{ hood.hood_post.count }}
+                                    Post{{ hood.hood_post.count|pluralize }}</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <h1 class="heading"> <span>Businesses</span></h1>
+            <div class="flop">
+                <div class="pols">
+                    {% for bus in business %}
+                    <div class="pol" ontouchstart="this.classList.toggle('hover');">
+                        <div class="contour">
+                            <div class="uno" style="background-image: url(https://picsum.photos/200/300)">
+                                <div class="dinner">
+                                    <p>{{bus.name}}</p>
+                                    Owner: <span>{{ bus.user.user.username|title }}</span><br>
+                                    <span><small></small></span>
+                                </div>
+                            </div>
+                            <div class="dos"
+                                style="background-image: url(https://picsum.photos/200/300/?blur);box-shadow: inset 0px 0px 0 2000px rgba(0,0,0,0.5);">
+                                <div class="dinner">
+                                    <p>Business Name:</p>
+
+                                    <p>"{{bus.description}}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                
+            </div>
+        </div>
+
+
+
+        <div class="">
+            <h1 class="heading"> <span>Posts</span></h1>
+            <div class="pols">
+                {% for post in posts %}
+                <div class="pol" ontouchstart="this.classList.toggle('hover');">
+                    <div class="contour">
+                        <div class="uno" style="background-image: url(https://unsplash.it/500/500/)">
+                            <div class="dinner">
+                                <p>{{post.title}}</p>
+                                By:<span>{{ post.user.user.username|title }}</span><br>
+                                <span><small>{{post.date|date}}</small></span>
+                            </div>
+                        </div>
+                        <div class="dos"
+                            style="background-image: url(https://unsplash.it/500/500/?blur);box-shadow: inset 0px 0px 0 2000px rgba(0,0,0,0.5);background-size: cover">
+                            <div class="dinner">
+                                <p>Description:</p>
+
+                                <p>"{{post.post}}"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+      footer  start
+      ============================= -->
+      <section id="footer">
+        <div class="container">
+            <div class="row">
+                               <!-- .col-md-4 close -->
+                               <div class="col-md-4">
+                                <div class="block wow fadeInLeft" data-wow-delay="700ms">
+                                    <h3>CONTACT<span> INFO</span></h3>
+                                    <div class="blog">
+                                        <ul>
+                                            <li>
+                                                <h4><i class="fa fa-phone"></i>Telefone</h4>
+                                                <p>(000) 123 456 78- (000) 123 4567 89</p>
+                                            </li>
+                                            <li>
+                                                <h4><i class="fa fa-map-marker"></i>Address</h4>
+                                                <p>2046 Blue Spruce Lane Laurel Canada</p>
+                                            </li>
+                                            <li>
+                                                <h4><i class="fa fa-envelope"></i>E mail</h4>
+                                                <p>rest@gmail.com - rest@mail.ru</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- .col-md-4 close -->
+                <div class="col-md-4">
+                    <div class="block wow fadeInLeft" data-wow-delay="700ms">
+                        <h3>LATEST <span>BLOG POSTS</span></h3>
+                        <div class="blog">
+                            <ul>
+                                <li>
+                                    <h4><a href="#">Agencies</a></h4>
+                                    <p>Public Agencies</p>
+                                    <p>Public Agencies Blog</p>
+                                </li>
+                                <li>
+                                    <h4><a href="#">Business</a></h4>
+                                    <p>Real Estate</p>
+                                    <p>Enterprise</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adip iscing elit. Curabitur ut blandit sapien
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- .col-md-4 close -->
+                <div class="col-md-4">
+                    <div class="block wow fadeInLeft" data-wow-delay="1100ms">
+                        <div class="gallary">
+                            <h3>PHOTO <span>STREAM</span></h3>
+                            <ul>
+                                <li>
+                                    <a href="#"><img src="/static/images/photo/photo4.jpg" style="width: 64px;" alt=""></a>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="/static/images/photo/houses-and-buildings-clip-art-brick-house-with-dormer-windows-keyPKM-clipart.gif" style="width: 64px;" alt=""></a>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="/static/images/photo/photo4.png" style="width: 64px;" alt=""></a>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="/static/images/photo/photo1.jpeg" style="width: 64px;" alt=""></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="social-media-link">
+                            <h3>Follow <span>US</span></h3>
+                            <ul>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-twitter"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-facebook"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-dribbble"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-behance"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- .col-md-4 close -->
+            </div><!-- .row close -->
+        </div><!-- .containe close -->
+    </section><!-- #footer close -->
+    <!--
+          footer-bottom  start
+          ============================= -->
+    <footer id="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="block">
+                        <p>Copyright &copy; 2021 - All Rights Reserved.Design and Developed By <a
+                                href="http://www.google.com">Vickie Shiraa</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+
+    <script>
+        /*
+-------------------------------------
+------------------------------------- The image changue  every 10 Secons
+-------------------------------------
+-------------------------------------
+*/
+
+        var Cont = 0;
+
+        function inic() {
+            if (Cont % 2 != 0) {
+                document.querySelector('.img_1').style.opacity = '0';
+                document.querySelectorAll('.img_1')[1].style.opacity = '0';
+
+                setTimeout(function () {
+                    document.querySelector('.img_1').className = 'img_1 img_d_n';
+                    document.querySelectorAll('.img_1')[1].className = 'img_1 img_d_n';
+
+                    document.querySelector('.img_2').className = 'img_2 img_d_b';
+
+                    document.querySelectorAll('.img_2')[1].className = 'img_2 img_d_b';
+
+                }, 500);
+                setTimeout(function () {
+                    document.querySelector('.img_2').style.opacity = '0.2';
+                    document.querySelectorAll('.img_2')[1].style.opacity = '1';
+
+                }, 600);
+                Cont++;
+            } else {
+
+                document.querySelector('.img_2').style.opacity = '0';
+                document.querySelectorAll('.img_2')[1].style.opacity = '0';
+
+                setTimeout(function () {
+
+                    document.querySelector('.img_2').className = 'img_2 img_d_n';
+                    document.querySelectorAll('.img_2')[1].className = 'img_2 img_d_n';
+
+                    document.querySelector('.img_1').className = 'img_1 img_d_b';
+                    document.querySelectorAll('.img_1')[1].className = 'img_1 img_d_b';
+
+                }, 500);
+
+                setTimeout(function () {
+                    document.querySelector('.img_1').style.opacity = '0.2';
+                    document.querySelectorAll('.img_1')[1].style.opacity = '1';
+                }, 600);
+                Cont++;
+            }
+        }
+
+        window.onload = function () {
+            inic();
+            document.querySelector('.cont_text_img').className = "cont_text_img cont_text_img_act";
+            setTimeout(function () {
+                document.querySelector('.cont_img_frond').className =
+                    "cont_img_frond  cont_img_frond_active";
+            }, 1700);
+
+
+        }
+
+        setInterval(function () {
+            inic()
+        }, 10000);
+    </script>
+
+
+
+    {% endblock %}
