@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 import django_heroku
 import dj_database_url
 from decouple import config
@@ -137,6 +141,15 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+# adding config
+cloudinary.config( 
+  cloud_name = "db6sb46fn", 
+  api_key = "775561339175189", 
+  api_secret = "GWwqJD-92tp26xGIAsg3quLBr9o",
+)
+
 
 
 # Static files (CSS, JavaScript, Images)

@@ -94,11 +94,11 @@ CONTACT US  start
                 <div class="block">
                     <h1 class="heading wow fadeInUp" data-wow-duration="500ms" data-wow-delay="300ms"><span>POST</span></h1>
                     <h3 class="title wow fadeInLeft" data-wow-duration="500ms" data-wow-delay="300ms">Create A <span>Post</span> </h3>
-                    <form>
+                    <form action="" method="post" style="border-radius: 0;">
                         {% csrf_token %}
                         {{ form|crispy }}
+                        <button class="btn btn-default wow bounceIn" style="background-color: rgb(147, 89, 14);border-radius:0px;box-shadow: 1px 1px 3px black;color: rgb(255, 255, 255);" data-wow-duration="500ms" data-wow-delay="1300ms" role="button">Create Post</button>
                     </form>
-                    <button class="btn btn-default wow bounceIn" style="background-color: rgb(147, 89, 14);border-radius:0px;box-shadow: 1px 1px 3px black;color: rgb(255, 255, 255);" data-wow-duration="500ms" data-wow-delay="1300ms" href="#" role="button">Create Post</button>
                 </div>
             </div><!-- .col-md-12 close -->
         </div><!-- .row close --

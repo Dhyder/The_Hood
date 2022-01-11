@@ -39,11 +39,8 @@ class UpdateProfileForm(forms.ModelForm):
 
 
 class NeighbourHoodForm(forms.ModelForm):
-    hood_logo = ImageField(label='')
-    
     class Meta:
         model = NeighbourHood
-        fields = ('hood_logo','name','location','admin','description','health_tell','police_number',)
         exclude = ('admin',)
 
 
